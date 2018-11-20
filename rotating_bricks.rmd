@@ -1,0 +1,48 @@
+---
+title: "Rotate netCDF data"
+author: "Just Berkhout"
+date: "11/21/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(raster)
+
+
+
+```
+
+## LME Plot
+
+The data is encoded in degrees, starting from -180º to 180º
+
+```{r lmeplot, echo=FALSE}
+LMEs <- rgdal::readOGR(dsn ="/rd/gem/private/fishmip_inputs/misc/LMEs66/", layer = "LMEs66", verbose = FALSE)
+ElevenColours = RColorBrewer::brewer.pal(11, "Set3")
+plot(LMEs, col=ElevenColours[LMEs$LME_NUMBER%%11], border="white", lwd=1, axes=T, ylim = c(-90, 90) )
+```
+
+## Brick from netCDF plotted
+The netCDF data is encoded from 0º to 360º
+
+this means that the eastern hemisphere (0º to 180º) aligns with the LME polygons, but the western hemisphere does not (181º to 360º doesn't work against -180 to 0º).
+
+
+```{r brick, echo=FALSE}
+my_brick <- raster::brick("/rd/gem/private/GCM_INPUT/IPSL_CM5A_LR/rcp26/ipsl-cm5a-lr_rcp26_lphy_zint_monthly_200601_21001231.nc4")
+plot(my_brick[[1]]) #plots the firstlayer of the world lphy brick
+```
+
+
+## Brick from netCDF rotated
+The netcdf data neds to be manipuated using `raster::rotate()` to align with the 
+polygon data of the LMEs to ensure cropping gets to the correct data for both eastern and western hemispheres. 
+
+```{r brickrotated, echo=TRUE}
+my_brick_rotated <- raster::rotate(my_brick) #change coords from 0 to 360 to -180 to 180
+```
+
+```{r plotbrickrotated, echo=FALSE}
+plot(my_brick_rotated[[1]]) #plots the firstlayer of the world lphy brick
+```
