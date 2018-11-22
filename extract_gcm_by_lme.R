@@ -9,7 +9,7 @@
 # 1 layer (x,y)
 # associate bathymetric depth (find)
 # spatial average with cell size weight
-
+source("R/shared.R")
 
 .get_filename <- function(sce, var){
   #/rd/gem/private/GCM_INPUT/IPSL_CM5A_LR/historical/ipsl-cm5a-lr_historical_lphy_zint_monthly_195001_200512.nc4
@@ -38,12 +38,6 @@
   assertthat::assert_that(file.exists(file_name), msg= sprintf("%s does not exist", file_name))
   
   return(file_name)
-}
-
-.cropmask_brick <- function(src, msk){
-  cropped_brick <- raster::crop(my_brick, msk) 
-  masked_brick <-  raster::mask(cropped_brick, msk)   
-  return(masked_brick)
 }
 
 .brick2df <- function(brick, sce, var, lme){
@@ -92,7 +86,7 @@ for (scenario in scenarios){
         my_brick <- raster::rotate(my_brick) #change coords from 0 to 360 to -180 to 180
         for (lme_number in lme_numbers) {
           selected_lme <- lmes[lmes$LME_NUMBER==lme_number,]
-          res <- .cropmask_brick(my_brick, selected_lme)
+          res <- .cropmask(my_brick, selected_lme)
           list_out[[i]]  <- .brick2df(my_brick, scenario, variable, lme_number)
           i <- i + 1
           }#lme_number
