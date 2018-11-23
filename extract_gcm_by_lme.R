@@ -90,7 +90,7 @@ for (scenario in scenarios){
         for (lme_number in lme_numbers) {
           selected_lme <- lmes[lmes$LME_NUMBER==lme_number,]
           res <- .cropmask(my_brick, selected_lme)
-          list_out[[i]]  <- .brick2df(my_brick, scenario, variable, lme_number)
+          list_out[[i]]  <- .brick2df(res, scenario, variable, lme_number)
           i <- i + 1
           }#lme_number
         df_out <- dplyr::bind_rows(list_out)
