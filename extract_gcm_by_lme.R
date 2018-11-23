@@ -11,6 +11,9 @@
 # spatial average with cell size weight
 source("R/shared.R")
 
+my_working_path <- "/rd/gem/private/users/justb/gcm_lmescale_v2"
+
+
 .get_filename <- function(sce, var){
   #/rd/gem/private/GCM_INPUT/IPSL_CM5A_LR/historical/ipsl-cm5a-lr_historical_lphy_zint_monthly_195001_200512.nc4
   #/rd/gem/private/GCM_INPUT/IPSL_CM5A_LR/rcp26/ipsl-cm5a-lr_rcp26_lphy_zint_monthly_200601_21001231.nc4
@@ -77,7 +80,7 @@ variables <- c("lphy", "sphy", "sbt", "sst")
 
 for (scenario in scenarios){
     for (variable in variables){
-      out_file_name <- sprintf("/rd/gem/private/users/justb/gcm_lmescale/%s_%s.rds", scenario, variable)
+      out_file_name <- sprintf("%s/%s_%s.rds", my_working_path, scenario, variable)
       if(!file.exists(out_file_name)) {
         list_out <- list()
         i <- 1        
